@@ -70,3 +70,60 @@ def logout():
 		request.user.delete_session(request.user.token)
 		request.user = None
 	return resp
+@app.route('/forums')
+def forums():
+    topics = library.list_topics()
+    return render_template('forum.html', topics=topics)
+@app.route('/forums/<int:topic_id>')
+def forum_topic(topic_id):
+    topic = library.show_topic(topic_id)
+    return render_template('topic.html', topic=topic)
+@app.route('/forums/new', methods=['GET', 'POST'])
+def new_forum_topic():
+    if request.method == 'POST':
+        title = request.form['title']
+        user_id = request.form['user_id']  # Asegúrate de obtener el ID del usuario correctamente
+        library.create_topic(title, user_id)
+        return redirect('/forums')
+    return render_template('new_topic.html')
+
+@app.route('/forums/<int:topic_id>/reply', methods=['POST'])
+def reply_to_topic(topic_id):
+    user_id = request.form['user_id']  # Asegúrate de obtener el ID del usuario correctamente
+    content = request.form['content']
+    library.post_reply(topic_id, user_id, content)
+    return redirect(f'/forums/{topic_id}')
+
+@app.route('/reserve', methods=['POST'])
+
+@app.route('/reserve', methods=['POST'])
+def reserve_book():
+    user_id = request.cookies.get('user_id')  # Assuming user ID is stored in cookies
+    book_id = request.form['copy_id']
+    start_date = request.form['start_date']  # Assuming start date is provided in the form
+    end_date = request.form['end_date']  # Assuming end date is provided in the form
+    if library.create_reservation(user_id, book_id, start_date, end_date):
+        return redirect('/reservations')
+    else:
+        return 'Reservation failed', 400
+
+    # Esto incluiría obtener los datos de la solicitud, como el ID del usuario y el ID del libro,
+    # y llamar al método de crear reserva en el controlador
+    pass
+
+@app.route('/reservations')
+def reservations():
+    if 'user' in dir(request) and request.user and request.user.token:
+        # Here, implement logic to fetch and display user's reservation history
+        # This could involve calling a method from the controller and passing data to an HTML template
+        return render_template('reservations.html')  # Replace with actual reservations template
+    else:
+        # User is not logged in, show a warning message
+        return render_template('login_warning.html')  # Replace with a template showing login warning
+
+def user_reservations():
+    # Aquí iría la lógica para mostrar el historial de reservas de un usuario
+    # Esto incluiría llamar al método correspondiente en el controlador y
+    # pasar los datos a una plantilla HTML para su visualización
+    pass
+

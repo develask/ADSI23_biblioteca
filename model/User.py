@@ -39,3 +39,12 @@ class User:
 
 	def delete_session(self, session_hash):
 		db.delete("DELETE FROM Session WHERE session_hash = ? AND user_id = ?", (session_hash, self.id))
+
+	# Methods to handle reservations
+	def make_reservation(self, copy_id, start_date, end_date):
+		db.execute("INSERT INTO Reservation (user_id, copy_id, start_date, end_date) VALUES (?, ?, ?, ?)",
+				   (self.id, copy_id, start_date, end_date))
+		db.commit()
+
+	def get_reservations(self):
+		return db.select("SELECT * FROM Reservation WHERE user_id=?", (self.id,))

@@ -45,6 +45,48 @@ cur.execute("""
 		FOREIGN KEY(user_id) REFERENCES User(id)
 	)
 """)
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS ForumTopic (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        user_id INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES User(id)
+    )
+""")
+
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS ForumPost (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        topic_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        content TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (topic_id) REFERENCES ForumTopic(id),
+        FOREIGN KEY (user_id) REFERENCES User(id)
+    )
+""")
+cur.execute("""
+	CREATE TABLE BookCopy(
+   		id integer primary key AUTOINCREMENT,
+    	book_id integer,
+    	status varchar(20) DEFAULT 'available',
+    	condition varchar(50) DEFAULT 'good',
+    	FOREIGN KEY(book_id) REFERENCES Book(id)
+	)
+""")
+
+cur.execute("""
+	CREATE TABLE Reservation(
+		id integer primary key AUTOINCREMENT,
+ 		user_id integer,
+    	copy_id integer,
+    	start_date date,
+    	end_date date,
+    	FOREIGN KEY(user_id) REFERENCES User(id),
+    	FOREIGN KEY(copy_id) REFERENCES BookCopy(id)
+	)
+""")
 
 ### Insert users
 
