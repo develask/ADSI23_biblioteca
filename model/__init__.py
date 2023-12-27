@@ -4,4 +4,3 @@ from .Book import Book
 from .User import User
 from .ForumTopic import ForumTopic
 from .ForumPost import ForumPost
-

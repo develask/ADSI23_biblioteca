@@ -13,7 +13,7 @@ def get_logged_user():
 		token = request.cookies.get('token')
 		time = request.cookies.get('time')
 		if token and time:
-			request.user = library.get_user_cookies(token, int(time))
+			request.user = library.get_user_cookies(token, float(time))
 			if request.user:
 				request.user.token = token
 
@@ -56,7 +56,10 @@ def login():
 		resp.set_cookie('token', session.hash)
 		resp.set_cookie('time', str(session.time))
 	else:
-		resp = make_response(render_template('login.html'))
+		if request.method == 'POST':
+			return redirect('/login')
+		else:
+			resp = render_template('login.html')
 	return resp
 
 
@@ -70,6 +73,26 @@ def logout():
 		request.user.delete_session(request.user.token)
 		request.user = None
 	return resp
+
+@app.route('/reserve/book/<int:book_id>')
+def reserve_book(book_id):
+    # Obtener la información del libro usando 'book_id'
+    # Suponemos que existe una función 'get_book_info' que retorna los detalles del libro
+    book_info = library.get_book_info(book_id)
+    if book_info is None:
+        return "Libro no encontrado", 404
+
+    # Renderizar la plantilla de reserva con la información del libro
+    return render_template('reserve_book.html', book=book_info)
+
+
+
+@app.route('/process_reservation', methods=['POST'])
+def process_reservation():
+    # Lógica para procesar la reserva
+    # Esto incluirá recibir los datos del formulario y almacenar la reserva en la base de datos.
+    return "Reserva procesada"  # Esto es solo un marcador de posición y debe ser reemplazado por la lógica real.
+
 @app.route('/forums')
 def forums():
     topics = library.list_topics()
@@ -93,37 +116,3 @@ def reply_to_topic(topic_id):
     content = request.form['content']
     library.post_reply(topic_id, user_id, content)
     return redirect(f'/forums/{topic_id}')
-
-@app.route('/reserve', methods=['POST'])
-
-@app.route('/reserve', methods=['POST'])
-def reserve_book():
-    user_id = request.cookies.get('user_id')  # Assuming user ID is stored in cookies
-    book_id = request.form['copy_id']
-    start_date = request.form['start_date']  # Assuming start date is provided in the form
-    end_date = request.form['end_date']  # Assuming end date is provided in the form
-    if library.create_reservation(user_id, book_id, start_date, end_date):
-        return redirect('/reservations')
-    else:
-        return 'Reservation failed', 400
-
-    # Esto incluiría obtener los datos de la solicitud, como el ID del usuario y el ID del libro,
-    # y llamar al método de crear reserva en el controlador
-    pass
-
-@app.route('/reservations')
-def reservations():
-    if 'user' in dir(request) and request.user and request.user.token:
-        # Here, implement logic to fetch and display user's reservation history
-        # This could involve calling a method from the controller and passing data to an HTML template
-        return render_template('reservations.html')  # Replace with actual reservations template
-    else:
-        # User is not logged in, show a warning message
-        return render_template('login_warning.html')  # Replace with a template showing login warning
-
-def user_reservations():
-    # Aquí iría la lógica para mostrar el historial de reservas de un usuario
-    # Esto incluiría llamar al método correspondiente en el controlador y
-    # pasar los datos a una plantilla HTML para su visualización
-    pass
-

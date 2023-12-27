@@ -41,10 +41,11 @@ cur.execute("""
 	CREATE TABLE Session(
 		session_hash varchar(32) primary key,
 		user_id integer,
-		last_login integer,
+		last_login float,
 		FOREIGN KEY(user_id) REFERENCES User(id)
 	)
 """)
+
 cur.execute("""
     CREATE TABLE IF NOT EXISTS ForumTopic (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -66,27 +67,8 @@ cur.execute("""
         FOREIGN KEY (user_id) REFERENCES User(id)
     )
 """)
-cur.execute("""
-	CREATE TABLE BookCopy(
-   		id integer primary key AUTOINCREMENT,
-    	book_id integer,
-    	status varchar(20) DEFAULT 'available',
-    	condition varchar(50) DEFAULT 'good',
-    	FOREIGN KEY(book_id) REFERENCES Book(id)
-	)
-""")
 
-cur.execute("""
-	CREATE TABLE Reservation(
-		id integer primary key AUTOINCREMENT,
- 		user_id integer,
-    	copy_id integer,
-    	start_date date,
-    	end_date date,
-    	FOREIGN KEY(user_id) REFERENCES User(id),
-    	FOREIGN KEY(copy_id) REFERENCES BookCopy(id)
-	)
-""")
+
 
 ### Insert users
 

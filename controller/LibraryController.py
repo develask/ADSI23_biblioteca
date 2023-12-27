@@ -49,6 +49,15 @@ class LibraryController:
 		else:
 			return None
 
+	def get_book_info(self, book_id):
+		# Realizar una consulta a la base de datos para obtener la información del libro
+		res = db.select("SELECT * FROM Book WHERE id = ?", (book_id,))
+		if len(res) > 0:
+			# Convertir el resultado en un objeto 'Book'
+			return Book(res[0][0], res[0][1], res[0][2], res[0][3], res[0][4])
+		else:
+			return None
+
 	def list_topics(self):
 		res = db.select("SELECT * FROM ForumTopic")
 		topics = [ForumTopic(t[0], t[1], t[2], t[3]) for t in res]
@@ -71,27 +80,3 @@ class LibraryController:
 
 	def post_reply(self, topic_id, user_id, content):
 		db.execute("INSERT INTO ForumPost (topic_id, user_id, content) VALUES (?, ?, ?)", (topic_id, user_id, content))
-
-	def create_reservation(self, user_id, copy_id, start_date, end_date):
-		user = User(user_id)
-
-	def create_reservation(self, user_id, copy_id, start_date, end_date):
-		# Here, implement logic to insert a new reservation into the database
-		# Ensure that the copy of the book is available for reservation
-		# Validate the dates (not exceeding 2 months) and user session
-		# Return True if reservation is successful, False otherwise
-		return True  # Placeholder for successful reservation
-
-	def get_user_reservations(self, user_id):
-		user = User(user_id)
-		return user.get_reservations()
-
-	def create_reservation(self, user_id, book_id, start_date, end_date):
-		# Aquí iría la lógica para insertar una nueva reserva en la base de datos
-		# Debes asegurarte de que la copia del libro esté disponible para reserva
-		pass
-
-	def get_user_reservations(self, user_id):
-		# Aquí iría la lógica para obtener las reservas realizadas por un usuario
-		# Esto incluiría información sobre los libros reservados y las fechas de reserva
-		pass
