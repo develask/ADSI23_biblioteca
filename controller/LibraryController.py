@@ -76,7 +76,10 @@ class LibraryController:
 		return topic, replies
 
 	def create_topic(self, title, user_id):
-		db.execute("INSERT INTO ForumTopic (title, user_id) VALUES (?, ?)", (title, user_id))
-
+		# Suponiendo que 'db' es tu objeto de conexión a la base de datos
+		cursor = db.cursor()  # Obtener un cursor
+		cursor.execute("INSERT INTO ForumTopic (title, user_id) VALUES (?, ?)", (title, user_id))
+		db.commit()  # Guardar los cambios
+		cursor.close()  # Cerrar el cursor
 	def post_reply(self, topic_id, user_id, content):
 		db.execute("INSERT INTO ForumPost (topic_id, user_id, content) VALUES (?, ?, ?)", (topic_id, user_id, content))

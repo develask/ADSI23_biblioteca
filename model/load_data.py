@@ -47,7 +47,7 @@ cur.execute("""
 """)
 
 cur.execute("""
-    CREATE TABLE IF NOT EXISTS ForumTopic (
+    CREATE TABLE ForumTopic(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         user_id INTEGER NOT NULL,
@@ -57,7 +57,7 @@ cur.execute("""
 """)
 
 cur.execute("""
-    CREATE TABLE IF NOT EXISTS ForumPost (
+    CREATE TABLE ForumPost(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         topic_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
@@ -100,5 +100,9 @@ for author, title, cover, description in libros:
 
 	con.commit()
 
+with open('temas.tsv', 'r') as f:
+	temas = [x.split("\t") for x in f.readlines()]
 
-
+for id, title, user_id, created_at in temas:
+	cur.execute("INSERT INTO ForumTopic (id, title, user_id, created_at) VALUES (?, ?, ?, ?)", (id, title, user_id, created_at))
+	con.commit()
