@@ -1,4 +1,5 @@
-# model/ForumPost.py
+import sqlite3
+
 
 class ForumPost:
     def __init__(self, id, topic_id, user_id, content, created_at):
@@ -8,7 +9,19 @@ class ForumPost:
         self.content = content
         self.created_at = created_at
 
-    # Aquí puedes añadir métodos para interactuar con la base de datos, tales como:
-    # - Crear una nueva respuesta (post)
-    # - Obtener todas las respuestas de un tema específico
-    # - etc.
+    @staticmethod
+    def post_reply(topic_id, user_id, content):
+        conn = sqlite3.connect('datos.db')
+        cur = conn.cursor()
+        cur.execute("INSERT INTO ForumPost (topic_id, user_id, content) VALUES (?, ?, ?)", (topic_id, user_id, content))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def get_replies_by_topic(topic_id):
+        conn = sqlite3.connect('datos.db')
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM ForumPost WHERE topic_id = ?", (topic_id,))
+        replies_data = cur.fetchall()
+        conn.close()
+        return [ForumPost(*reply) for reply in replies_data]
