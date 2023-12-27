@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+<h2>{{ topic.title }}</h2>
+<p>Publicado por {{ topic.user_id }} en {{ topic.created_at }}</p>
+
+<h3>Respuestas</h3>
+<ul>
+    {% for reply in replies %}
+    <li>{{ reply.content }} - Respondido por {{ reply.user_id }} en {{ reply.created_at }}</li>
+    {% endfor %}
+</ul>
+
+<!-- Formulario para responder -->
+<form action="/forums/{{ topic.id }}/reply" method="post">
+    <div>
+        <label for="content">Respuesta:</label>
+        <textarea id="content" name="content" required></textarea>
+    </div>
+    <div>
+        <input type="submit" value="Responder">
+    </div>
+</form>
+{% endblock %}

@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+<h1>Responder al Tema: {{ topic.title }}</h1>
+<form action="/forums/{{ topic.id }}/reply" method="post">
+    <div>
+        <label for="content">Tu Respuesta:</label>
+        <textarea id="content" name="content" required></textarea>
+    </div>
+    <div>
+        <input type="submit" value="Enviar Respuesta">
+    </div>
+</form>
+{% endblock %}

@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+<h1>Foros</h1>
+<ul>
+    {% for topic in topics %}
+    <li>
+        <a href="/forums/{{ topic.id }}">{{ topic.title }}</a> - Creado por {{ topic.user_id }} en {{ topic.created_at }}
+    </li>
+    {% endfor %}
+</ul>
+<a href="/forums/new" class="btn btn-primary">Crear Nuevo Tema</a>
+{% endblock %}
